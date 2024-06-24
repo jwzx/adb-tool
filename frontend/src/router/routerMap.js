@@ -167,6 +167,11 @@ const constantRouterMap = [
             name: 'AdbIndex',
             component: () => import('@/views/adb/adb/Index.vue')
           },
+          {
+            path: '/adb/adb/action',
+            name: 'AdbAction',
+            component: () => import('@/views/adb/adb/Action.vue')
+          },
           
         ]  
       },

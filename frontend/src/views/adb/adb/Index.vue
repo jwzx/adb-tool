@@ -111,10 +111,32 @@
         
             
       </a-row>
+    </div>  
+    <div class="one-block-1">
+      <span>
+        5. 自定义指令
+      </span>
+    </div>  
+    <div class="one-block-2">
       <a-row>
-        <a-col :span="24">
-         连接日志
-        </a-col>  
+      <a-col :span="20">
+          <a-input v-model.value="command" :value="command" name="command"  placeholder="shell pm list packages -3 " @input="handleInput($event)"   addon-before="指令" />
+        </a-col>
+        <a-col :span="4">
+          <a-button @click="adbConnect('command')">
+            执行
+          </a-button>
+        </a-col>
+      </a-row>
+    </div>
+    <div class="one-block-1">
+      <span>
+        6. 连接日志
+      </span>
+    </div>  
+    <div class="one-block-2">
+      <a-row>
+        
         <a-col :span="24">
           <a-textarea :value="connectInfo" :rows="5"  placeholder="连接结果"  />
         </a-col>   
@@ -132,7 +154,6 @@
 <script>
 import { ipcApiRoute } from '@/api/main';
 import { ipc } from '@/utils/ipcRenderer';
-import { getTransitionRawChildren } from 'vue';
 
 export default {
   data() {
@@ -145,6 +166,7 @@ export default {
       ipHost:"",
       ipPort:"",
       connectInfo:"",
+      command:""
 
     };
   },
@@ -198,9 +220,15 @@ export default {
         break;
         case "getProxy":
         case 'clearProxy':
-        params={
-          action:action,
-        }
+          params={
+            action:action,
+          }
+          break;
+          case "command":
+          params={
+            action:action,
+            command:this.command.replace(/adb/,"")
+          }
           break;
         
         default:

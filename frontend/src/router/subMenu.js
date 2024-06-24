@@ -143,6 +143,12 @@ export default {
       pageName: 'AdbIndex',
       params: {}
     },
+	'menu_101' : {
+		icon: 'profile',
+		title: 'adb遥控器',
+		pageName: 'AdbAction',
+		params: {}
+	  },
                                                
   } 	 	
 }

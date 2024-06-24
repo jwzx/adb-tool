@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^6.1.0",
+    "@surely-vue/table": "^4.3.4",
     "ant-design-vue": "2.2.6",
     "axios": "^0.21.1",
     "socket.io-client": "^4.4.1",

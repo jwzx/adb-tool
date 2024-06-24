@@ -42,7 +42,7 @@ class AdbController extends Controller {
   * adb连接
   */
   async adbConnect(args) {
-    const { action, adbHost, adbPort, packageName, ipHost, ipPort } = args;
+    const { action, adbHost, adbPort, packageName, ipHost, ipPort,command } = args;
 
     const data = {
       action,
@@ -88,7 +88,11 @@ class AdbController extends Controller {
       case "connect":
         data.result = await Services.get('adb').adbConnect(adbHost,adbPort);;
         break;
+      case "command":
+        data.result = await Services.get('adb').adbAction(command);
+        break;
       default:
+        data.result = await Services.get('adb').adbAction(action);
 
     }
     return data
