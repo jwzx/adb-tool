@@ -33,7 +33,9 @@ class FrameworkController extends Controller {
    * json数据库操作
    */   
   async jsondbOperation(args) {
-    const { action, info, delete_name, update_name, update_age, search_age, data_dir } = args;
+
+    let argsType = typeof args;
+    const { action, info, name, keycode,  data_dir } = argsType == "string" ? JSON.parse(argsType) : args;
 
     const data = {
       action,
@@ -42,17 +44,23 @@ class FrameworkController extends Controller {
     };
     
     switch (action) {
+      case 'set' :
+        data.result = await Services.get('database.jsondb').setAdbData(JSON.parse(info));
+        break;
       case 'add' :
-        data.result = await Services.get('database.jsondb').addTestData(info);
+        data.result = await Services.get('database.jsondb').addAdbData(JSON.parse(info));
         break;
       case 'del' :
-        data.result = await Services.get('database.jsondb').delTestData(delete_name);
+        data.result = await Services.get('database.jsondb').delAdbData(keycode);
         break;
       case 'update' :
-        data.result = await Services.get('database.jsondb').updateTestData(update_name, update_age);
+        data.result = await Services.get('database.jsondb').updateAdbData(name, keycode);
         break;
       case 'get' :
-        data.result = await Services.get('database.jsondb').getTestData(search_age);
+        data.result = await Services.get('database.jsondb').getAdbData(name);
+        break;
+      case 'getAll' :
+        data.result = await Services.get('database.jsondb').getAllAdbData();
         break;
       case 'getDataDir' :
         data.result = await Services.get('database.jsondb').getDataDir();
@@ -62,7 +70,7 @@ class FrameworkController extends Controller {
         break;          
     }
 
-    data.all_list = await Services.get('database.jsondb').getAllTestData();
+     data.all_list = await Services.get('database.jsondb').getAllAdbData();
 
     return data;
   }
@@ -91,16 +99,16 @@ class FrameworkController extends Controller {
 
     switch (action) {
       case 'add' :
-        data.result = await Services.get('database.sqlitedb').addTestDataSqlite(info);;
+        data.result = await Services.get('database.sqlitedb').addAdbDataSqlite(info);;
         break;
       case 'del' :
-        data.result = await Services.get('database.sqlitedb').delTestDataSqlite(delete_name);;
+        data.result = await Services.get('database.sqlitedb').delAdbDataSqlite(delete_name);;
         break;
       case 'update' :
-        data.result = await Services.get('database.sqlitedb').updateTestDataSqlite(update_name, update_age);
+        data.result = await Services.get('database.sqlitedb').updateAdbDataSqlite(update_name, update_age);
         break;
       case 'get' :
-        data.result = await Services.get('database.sqlitedb').getTestDataSqlite(search_age);
+        data.result = await Services.get('database.sqlitedb').getAdbDataSqlite(search_age);
         break;
       case 'getDataDir' :
         data.result = await Services.get('database.sqlitedb').getDataDir();
@@ -110,7 +118,7 @@ class FrameworkController extends Controller {
         break;            
     }
 
-    data.all_list = await Services.get('database.sqlitedb').getAllTestDataSqlite();
+    data.all_list = await Services.get('database.sqlitedb').getAllAdbDataSqlite();
 
     return data;
   }  

@@ -244,7 +244,7 @@ export default {
         switch(action){
           case "getProxy":
           case "clearProxy":
-            let proxyIP = res.result.result.match(/[\d\.\:]+/) || "";
+            let proxyIP = res.result.result.match(/[\d\.\:]+/) || [""];
             proxyIP = proxyIP[0].split(":") || []
             _this.ipHost = proxyIP[0] || "";
             _this.ipPort = proxyIP[1] || "";
@@ -253,7 +253,7 @@ export default {
             console.log(action,res.result.result)
           break;
           case "devices":
-            let adbIP = res.result.result.match(/[\d\.\:]+/) || "";
+            let adbIP = res.result.result.match(/[\d\.\:]+/) || [""];
               adbIP = adbIP[0].split(":") || [];
               _this.adbHost = adbIP[0] || "";
               _this.adbPort = adbIP[1] || "";

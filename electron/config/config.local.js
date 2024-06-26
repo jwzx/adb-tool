@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Author: jwzx
+ * @Date: 2023-11-28 14:54:58
+ * @LastEditTime: 2024-06-25 18:37:11
+ * @LastEditors: jwzx
+ * @FilePath: \adbTool\electron\config\config.local.js
+ */
 'use strict';
 
 /**
@@ -10,7 +18,8 @@ module.exports = (appInfo) => {
    * 开发者工具
    */
   config.openDevTools = {
-    mode: 'undocked'
+    // mode: 'undocked'
+    mode: 'right'
   };
 
   /**

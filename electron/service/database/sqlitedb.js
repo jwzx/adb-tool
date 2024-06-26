@@ -55,7 +55,7 @@ class SqlitedbService extends Service {
   /*
    * 增 Test data (sqlite)
    */
-  async addTestDataSqlite(data) {
+  async addAdbDataSqlite(data) {
     //console.log("add data:", data);
 
     let table = 'user';
@@ -70,7 +70,7 @@ class SqlitedbService extends Service {
   /*
    * 删 Test data (sqlite)
    */
-  async delTestDataSqlite(name = '') {
+  async delAdbDataSqlite(name = '') {
     //console.log("delete name:", name);
 
     let table = 'user';
@@ -85,7 +85,7 @@ class SqlitedbService extends Service {
   /*
    * 改 Test data (sqlite)
    */
-  async updateTestDataSqlite(name= '', age = 0) {
+  async updateAdbDataSqlite(name= '', age = 0) {
     //console.log("update :", {name, age});
 
     let table = 'user';
@@ -100,7 +100,7 @@ class SqlitedbService extends Service {
   /*
    * 查 Test data (sqlite)
    */
-  async getTestDataSqlite(age = 0) {
+  async getAdbDataSqlite(age = 0) {
     //console.log("select :", {age});
 
     let table = 'user';
@@ -115,7 +115,7 @@ class SqlitedbService extends Service {
   /*
    * all Test data (sqlite)
    */
-  async getAllTestDataSqlite() {
+  async getAllAdbDataSqlite() {
     //console.log("select all user");
 
     let table = 'user';

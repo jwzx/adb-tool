@@ -39,23 +39,23 @@
       <span>
         3. 连接日志
       </span>
-    </div>  
+    </div>
     <div class="one-block-2">
       <a-row>
-        
+
         <a-col :span="24">
-          <a-textarea :value="connectInfo" :rows="5"  placeholder="连接结果"  />
-        </a-col>   
+          <a-textarea :value="connectInfo" :rows="5" placeholder="连接结果" />
+        </a-col>
       </a-row>
-     
-    </div> 
+
+    </div>
     <div class="one-block-1">
       <span>
         4. 编辑指令
       </span>
     </div>
     <div class="one-block-2">
-      <Table v-model:commands="commands"></Table>
+      <Table :commands="commands" @updateCommands="updateCommands"></Table>
     </div>
 
     <div class="one-block-2">
@@ -64,11 +64,12 @@
         <a-descriptions-item label="可以解锁屏幕" :span="2">adb shell input keyevent 82</a-descriptions-item>
         <a-descriptions-item label="在屏幕上点击坐标点x=50 y=250的位置" :span="3">adb shell input tap 50 250</a-descriptions-item>
         <a-descriptions-item label="这条命令相当于按了设备的Backkey键" :span="3">adb shell input keyevent 4</a-descriptions-item>
-        <a-descriptions-item label="在屏幕上做划屏操作，前四个数为坐标点，后面是滑动的时间(单位毫秒)" :span="4">adb shell input swipe 50 250 250 250 500</a-descriptions-item>
+        <a-descriptions-item label="在屏幕上做划屏操作，前四个数为坐标点，后面是滑动的时间(单位毫秒)" :span="4">adb shell input swipe 50 250 250 250
+          500</a-descriptions-item>
       </a-descriptions>
     </div>
 
-  
+
     <Desc></Desc>
 
 
@@ -76,7 +77,7 @@
 </template>
 <script>
 import { ipcApiRoute } from '@/api/main';
-import {defineAsyncComponent} from "vue"
+import { defineAsyncComponent,ref,reactive,watchEffect } from "vue"
 import { ipc } from '@/utils/ipcRenderer';
 // import Table from "./components/table.vue";
 const Table = defineAsyncComponent(() =>
@@ -90,7 +91,7 @@ export default {
     return {
       // 输入指令
       command: "shell input keyevent 3",
-      connectInfo:"",
+      connectInfo: "",
       //默认指令列表
       commands: [
         { keycode: "KEYCODE_HOME", "name": "主页" },
@@ -111,31 +112,77 @@ export default {
         { keycode: "KEYCODE_DPAD_RIGHT", "name": "向右" },
 
       ],
-      isNext:true,
+      isNext: true,
+      isInit:false,
 
     };
   },
- 
-  mounted() {
-    // this.init();
+  watch:{
+    command:{
+      handler(val) {
+        console.log("parentcommands",val)
+        // this.commands = val;
+      },
+      immediate: true,
+      deep: true,
+    },
+  },
+
+ async beforeMount() {
+  var _this = this;
+  // watchEffect( () => {
+  await _this.init();
+  // ))
+   
 
   },
-  	
-  components:{
-    Desc ,
+
+  components: {
+    Desc,
     Table
     // Table:()=>import("@/views/adb/adb/compones/Table.vue")
   },
   methods: {
-    init() {
-      // ipc.invoke(ipcApiRoute.getIps).then(res => {
-      //   this.ips = res;
-      //   // debugger
-      //   console.log(this.ips)
-      // })
-      this.adbConnect("devices");
-      this.adbConnect("getProxy");
+    async init() {
+// debugger
+      let keyCodeJson = await ipc.invoke(ipcApiRoute.jsondbOperation, {
+        action: "getAll"
+      })
+      console.log("keyCodeJson", keyCodeJson)
+      if (keyCodeJson.result && keyCodeJson.result.length == 0) {
+        this.updateCommands(this.commands);
 
+      }else{
+        this.commands = keyCodeJson.result;
+        console.log("this.commands", this.commands)
+      }
+    this.isInit = true;
+     
+      // console.log()
+
+
+
+    },
+
+   async updateCommands(e) {
+    if(!this.isInit) return;
+    if(!e.length  ) return;
+    this.isInit = false;
+      this.commands =e;;
+      let info = JSON.stringify(this.commands);
+      try {
+          let result = await ipc.invoke(ipcApiRoute.jsondbOperation,  {
+            action: "set",
+            info: info
+,
+          })
+          console.log("result", result)
+        } catch (error) {
+          console.log("setData",error)
+        }
+        this.isInit = true;
+     
+      // this.commands = e;
 
     },
     handleInput(e) {
@@ -143,11 +190,11 @@ export default {
       // this.adbHost = e.target.value;
       this.$forceUpdate()
     },
-    
+
     adbConnect(action, keyCode) {
 
       var _this = this;
-      if(!this.isNext) return;
+      if (!this.isNext) return;
       this.isNext = false;
       let command = ``;
       if (keyCode) {

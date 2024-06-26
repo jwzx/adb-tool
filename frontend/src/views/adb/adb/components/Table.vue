@@ -1,25 +1,19 @@
 <template>
-  <a-button type="primary" class="editable-add-btn" @click="handleAdd" style="margin-bottom: 8px"> <template #icon><PlusCircleOutlined /> </template>Add</a-button>
+  <a-button type="primary" class="editable-add-btn" @click="handleAdd" style="margin-bottom: 8px"> <template #icon>
+      <PlusCircleOutlined />
+    </template>Add</a-button>
 
-<a-table bordered :data-source="dataSource" :columns="columns" :pagination=false>
-    <template v-for="col in ['key','name', 'keycode']" #[col]="{ text, record }" :key="col">
+  <a-table bordered :data-source="dataSource" :columns="columns" :pagination=false>
+    <template v-for="col in ['key', 'name', 'keycode']" #[col]="{ text, record }" :key="col">
       <div class="editable-cell">
-        <a-input
-          v-if="editableData[record.key]"
-          v-model:value="editableData[record.key][col]"
-          style="margin: -5px 0"
-        />
+        <a-input v-if="editableData[record.key]" v-model:value="editableData[record.key][col]" style="margin: -5px 0" />
         <template v-else>
-          {{  text }}
+          {{ text }}
         </template>
       </div>
     </template>
     <template #operation="{ record }">
-      <a-popconfirm
-        v-if="dataSource.length"
-        title="Sure to delete?"
-        @confirm="onDelete(record.key)"
-      >
+      <a-popconfirm v-if="dataSource.length" title="Sure to delete?" @confirm="onDelete(record.key)">
         <a>Delete</a>
       </a-popconfirm>
       <div class="editable-row-operations">
@@ -35,12 +29,14 @@
       </div>
     </template>
   </a-table>
-  <a-button type="primary" class="editable-add-btn" @click="handleAdd" style="margin-bottom: 8px"> <template #icon><PlusCircleOutlined /> </template>Add</a-button>
+  <a-button type="primary" class="editable-add-btn" @click="handleAdd" style="margin-bottom: 8px"> <template #icon>
+      <PlusCircleOutlined />
+    </template>Add</a-button>
 </template>
 <script>
-import { computed, defineComponent, reactive, ref } from 'vue';
+import { computed, defineComponent,reactive,  ref, toRef, onMounted, onUpdated, onActivated } from 'vue';
 import { CheckOutlined, EditOutlined } from '@ant-design/icons-vue';
-import { cloneDeep } from 'lodash-es';
+import { cloneDeep,isEqual } from 'lodash-es';
 export default defineComponent({
   components: {
     CheckOutlined,
@@ -52,66 +48,83 @@ export default defineComponent({
       default: () => [],
     },
   },
-  emits:["update:commands"],
-  watch:{
-    dataSource: {
-      handler(val) {
+  emits: ["updateCommands"],
+  watch: {
+    commands: {
+      handler(val,val2) {
         // debugger
-        try {
-          this.$emit("update:commands",val); 
-        this.count = val.length;
-        } catch (error) {
-          console.log(error)
-        }
-       
-        console.log(val,this.count)
+        this.dataSource = cloneDeep(val);
+        console.log("parentcommands----", val,val2);
       },
       immediate: true,
       deep: true,
     },
+    dataSource: {
+      handler(newVal,oldVal) {
+        if(isEqual(newVal,oldVal))return;
+        // debugger
+        try {
+          this.$emit("updateCommands",cloneDeep(newVal) );
+          this.count = newVal.length;
+        } catch (error) {
+          console.log(error)
+        }
+
+        console.log(newVal, this.count)
+      },
+      immediate: true,
+      deep: true,
+      flush: 'post'
+    },
   },
   setup(props) {
+    // debugger
     const columns = [
-    {
-    title: 'name',
-    dataIndex: 'name',
-    slots: { customRender: 'name' },
-  },
-  {
-    title: 'keycode',
-    dataIndex: 'keycode',
-    slots: {
+      {
+        title: 'name',
+        dataIndex: 'name',
+        slots: { customRender: 'name' },
+      },
+      {
+        title: 'keycode',
+        dataIndex: 'keycode',
+        slots: {
           customRender: 'keycode',
         },
-  },
-  {
-    title: 'operation',
-    dataIndex: 'operation',
-    slots: {
+      },
+      {
+        title: 'operation',
+        dataIndex: 'operation',
+        slots: {
           customRender: 'operation',
         },
-  },
+      },
 
     ];
 
-    let dataSourceObj = props.commands.filter((item,idx) => {
-      item.key = idx + "";
-      return item
-    })
-    const dataSource = ref(dataSourceObj);
+
+    let dataSource = ref(props.commands);
    
-  // console.log("dataSource",dataSource.value)
+
+
+    // console.log("dataSource",dataSource.value)
     const count = computed(() => dataSource.value.length + 1);
     const editableData = reactive({});
     const edit = key => {
       editableData[key] = cloneDeep(dataSource.value.filter(item => key === item.key)[0]);
     };
     const save = key => {
-      Object.assign(dataSource.value.filter(item => key === item.key)[0], editableData[key]);
+      let _dataSource = cloneDeep(dataSource.value)
+      Object.assign(_dataSource.filter(item => key === item.key)[0], editableData[key]);
       delete editableData[key];
+    
+      dataSource.value = _dataSource;
+
     };
     const onDelete = key => {
-      dataSource.value = dataSource.value.filter(item => item.key !== key);
+      let _dataSource = cloneDeep(dataSource.value)
+      _dataSource =  _dataSource.filter(item => item.key !== key)
+      dataSource.value = _dataSource
     };
     const cancel = key => {
       delete editableData[key];
@@ -122,7 +135,9 @@ export default defineComponent({
         name: `${count.value}`,
         keycode: `${count.value}`,
       };
-      dataSource.value.push(newData);
+      let _dataSource = cloneDeep(dataSource.value)
+      _dataSource.push(newData)
+      dataSource.value = _dataSource
     };
     return {
       columns,
@@ -141,6 +156,7 @@ export default defineComponent({
 <style lang="less">
 .editable-cell {
   position: relative;
+
   .editable-cell-input-wrapper,
   .editable-cell-text-wrapper {
     padding-right: 24px;
@@ -176,6 +192,7 @@ export default defineComponent({
     margin-bottom: 8px;
   }
 }
+
 .editable-cell:hover .editable-cell-icon {
   display: inline-block;
 }

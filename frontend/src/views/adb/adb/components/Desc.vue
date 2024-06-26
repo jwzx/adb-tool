@@ -672,7 +672,9 @@
 </template>
 
 <script>
-export default {
+import { computed, defineComponent, reactive, ref } from 'vue';
+
+export default defineComponent( {
   data () {
     return {
     };
@@ -687,7 +689,7 @@ export default {
   mounted:function() {},
 
   methods: {}
-}
+})
 
 </script>
 <style lang='scss' scoped>
