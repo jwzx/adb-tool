@@ -1,6 +1,6 @@
 {
   "name": "adbTool",
-  "version": "3.8.0.1",
+  "version": "3.8.0",
   "description": "A fast, desktop software development framework",
   "main": "main.js",
   "scripts": {
