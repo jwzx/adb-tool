@@ -16,6 +16,15 @@
             执行
           </a-button>
         </a-col>
+        <a-col :span="20">
+          <a-input v-model.value="text" :value="text" name="text" placeholder="输入的字符"
+            @input="handleInput($event)" addon-before="字符输入" />
+        </a-col>
+        <a-col :span="4">
+          <a-button @click="adbConnect('commandText')">
+            执行
+          </a-button>
+        </a-col>
       </a-row>
     </div>
 
@@ -26,14 +35,14 @@
     </div>
 
     <div class="one-block-2">
-      <a-row>
+      <!-- <a-row> -->
 
-        <a-col :span="3" v-for="(item, index) in commands" :key="index">
+        <a-flex wrap="wrap" gap="small"  v-for="(item, index) in commands" :key="index">
           <a-button @click="adbConnect('command', item.keycode)">
             {{ item.name }}
           </a-button>
-        </a-col>
-      </a-row>
+        </a-flex>
+      <!-- </a-row> -->
     </div>
     <div class="one-block-1">
       <span>
@@ -91,6 +100,7 @@ export default {
     return {
       // 输入指令
       command: "shell input keyevent 3",
+      text:"abc",
       connectInfo: "",
       //默认指令列表
       commands: [
@@ -144,6 +154,7 @@ export default {
   },
   methods: {
     async init() {
+      let _this = this;
 // debugger
       let keyCodeJson = await ipc.invoke(ipcApiRoute.jsondbOperation, {
         action: "getAll"
@@ -157,6 +168,20 @@ export default {
         console.log("this.commands", this.commands)
       }
     this.isInit = true;
+
+    this.adbConnect( "devices", function (res) {
+        // debugger
+        let result = res?.result?.result || "";
+        let result1 = result.split(/\r\n/).filter(val => {
+          if (val.match(/device$/)) {
+            return val.split(/\t+/)[0]
+          }
+        })
+        if (!result1.length) {
+          _this.$message.warn("adb未连接,请连接adb")
+        } 
+
+      })
      
       // console.log()
 
@@ -210,6 +235,13 @@ export default {
 
           }
           break;
+        case "commandText":
+          params = {
+            action: "command",
+            command: `shell input text ${_this.text}`
+
+          }
+          break;
 
 
         default:
@@ -221,27 +253,9 @@ export default {
       ipc.invoke(ipcApiRoute.adbConnect, params).then(res => {
         this.isNext = true;
         this.connectInfo = res.result.title + "\n" + res.result.result + "\n" + this.connectInfo;
-        // switch (action) {
-        //   case "getProxy":
-        //   case "clearProxy":
-        //     let proxyIP = res.result.result.match(/[\d\.\:]+/) || "";
-        //     proxyIP = proxyIP[0].split(":") || []
-        //     _this.ipHost = proxyIP[0] || "";
-        //     _this.ipPort = proxyIP[1] || "";
-
-        //     _this.$forceUpdate()
-        //     console.log(action, res.result.result)
-        //     break;
-        //   case "devices":
-        //     let adbIP = res.result.result.match(/[\d\.\:]+/) || "";
-        //     adbIP = adbIP[0].split(":") || [];
-        //     _this.adbHost = adbIP[0] || "";
-        //     _this.adbPort = adbIP[1] || "";
-
-        //     _this.$forceUpdate()
-        //     break;
-        //   default:
-        // }
+        if(typeof keyCode == "function"){
+          keyCode(res)
+        }
 
       })
     },

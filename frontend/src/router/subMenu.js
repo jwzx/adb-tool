@@ -149,6 +149,12 @@ export default {
 		pageName: 'AdbAction',
 		params: {}
 	  },
+	'menu_102' : {
+		icon: 'profile',
+		title: 'adb截屏',
+		pageName: 'AdbScreencap',
+		params: {}
+	  },
                                                
   } 	 	
 }

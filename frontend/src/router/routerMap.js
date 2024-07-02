@@ -172,6 +172,11 @@ const constantRouterMap = [
             name: 'AdbAction',
             component: () => import('@/views/adb/adb/Action.vue')
           },
+          {
+            path: '/adb/adb/Screencap',
+            name: 'AdbScreencap',
+            component: () => import('@/views/adb/adb/Screencap.vue')
+          },
           
         ]  
       },

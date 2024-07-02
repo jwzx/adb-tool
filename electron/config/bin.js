@@ -2,9 +2,9 @@
  * @Description: 
  * @Author: jwzx
  * @Date: 2023-11-28 14:54:58
- * @LastEditTime: 2023-11-29 10:22:07
+ * @LastEditTime: 2024-06-29 19:04:32
  * @LastEditors: jwzx
- * @FilePath: \electorn-egg\electron\config\bin.js
+ * @FilePath: \adbTool\electron\config\bin.js
  */
 /**
  * ee-bin 配置

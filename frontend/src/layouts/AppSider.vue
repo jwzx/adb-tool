@@ -80,12 +80,15 @@ export default {
   },
   methods: {
     menuHandle (e) {
-      console.log('sider menu e:', e);
+      console.log("fullpath",this.$route?.query?.path,'sider menu e:', e,'menu ------ current:',this.$route?.query?.current);
+      
       this.current = e ? e.key : this.current;
       console.log('sider menu current:', this.current);
 
       const linkInfo = this.menu[this.current]
       console.log('[home] load linkInfo:', linkInfo);
+      if(this.$route?.query?.current) return;
+
       this.$router.push({ name: linkInfo.pageName, params: linkInfo.params})
     },
     changeMenu(e) {

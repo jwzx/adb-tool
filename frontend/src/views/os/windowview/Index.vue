@@ -1,3 +1,11 @@
+<!--
+ * @Description: 
+ * @Author: jwzx
+ * @Date: 2023-11-29 10:13:26
+ * @LastEditTime: 2024-06-29 18:08:20
+ * @LastEditors: jwzx
+ * @FilePath: \adbTool\frontend\src\views\os\windowview\Index.vue
+-->
 <template>
   <div id="app-base-window-view">
     <div class="one-block-1">

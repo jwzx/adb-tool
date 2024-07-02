@@ -173,7 +173,21 @@ export default {
  
 
   mounted () {
+    var _this = this;
     this.init();
+    this.adbConnect( "devices", function (res) {
+        // debugger
+        let result = res?.result?.result || "";
+        let result1 = result.split(/\r\n/).filter(val => {
+          if (val.match(/device$/)) {
+            return val.split(/\t+/)[0]
+          }
+        })
+        if (!result1.length) {
+          _this.$message.warn("adb未连接,请连接adb")
+        } 
+
+      })
 
   },
   methods: {
@@ -193,7 +207,7 @@ export default {
       // this.adbHost = e.target.value;
       this.$forceUpdate()
     } ,
-    adbConnect(action){
+    adbConnect(action,cb){
       var _this = this;
       // debugger
       let params = {}
@@ -257,7 +271,9 @@ export default {
               adbIP = adbIP[0].split(":") || [];
               _this.adbHost = adbIP[0] || "";
               _this.adbPort = adbIP[1] || "";
-           
+            if(typeof cb == "function"){
+              cb(res)
+            }
             _this.$forceUpdate()
             break;
           default:

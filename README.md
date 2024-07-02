@@ -34,3 +34,6 @@ npm run build-w
 
 
 ```
+## 脚本打包
+
+./windowBuild.sh

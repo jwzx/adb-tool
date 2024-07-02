@@ -1,3 +1,11 @@
+/*
+ * @Description: 
+ * @Author: jwzx
+ * @Date: 2023-11-29 10:13:26
+ * @LastEditTime: 2024-06-29 19:06:22
+ * @LastEditors: jwzx
+ * @FilePath: \adbTool\frontend\vite.config.js
+ */
 import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
